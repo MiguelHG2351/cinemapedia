@@ -13,9 +13,6 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Cinemapedia', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      body: Center(
-        child: Text(Environment.movieDBKey)
-      ),
     );
   }
 }
