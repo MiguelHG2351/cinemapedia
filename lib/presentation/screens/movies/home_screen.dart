@@ -1,3 +1,4 @@
+import 'package:cinemapedia/config/constant/environment.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,6 +12,9 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cinemapedia', style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      body: Center(
+        child: Text(Environment.movieDBKey)
       ),
     );
   }
