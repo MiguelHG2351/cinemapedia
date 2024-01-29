@@ -37,7 +37,7 @@ class MovieMovieDB {
         backdropPath: json["backdrop_path"] ?? '',
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
-        originalLanguage: json['originalLanguage'],
+        originalLanguage: json['original_language'],
         originalTitle: json["original_title"],
         overview: json["overview"] ?? '',
         popularity: json["popularity"]?.toDouble(),
