@@ -1,3 +1,4 @@
+import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:cinemapedia/presentation/widget/widgets.dart';
@@ -39,13 +40,15 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
   
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(initialLoadingProvider);
+
+    if( initialLoading) return const FullScreenLoader();
+
     final nowPlayingMovies = ref.watch( nowPlayingMoviesProvider );
     final moviesSlideshow = ref.watch( moviesSlideShowProvider );
     final popularMovies = ref.watch( popularMoviesProvider );
     final upComingMovies = ref.watch( upComingMoviesProvider );
     final topRatedMovies = ref.watch( topRatedMoviesProvider );
-
-    if (nowPlayingMovies.isEmpty) return const Center(child: CircularProgressIndicator());
 
     return CustomScrollView(
       slivers: [
@@ -83,7 +86,7 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
                 MovieHorizontalListview(
                   movies: topRatedMovies,
                   title: 'Mejor calificadas',
-                  subTitle: 'Desde siempre',
+                  // subTitle: 'Desde siempre',
                   loadNextPage: () => ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
                 ),
               ]
