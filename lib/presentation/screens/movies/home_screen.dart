@@ -45,20 +45,7 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
 
         MoviesSlideShow(movies: nowPlayingMovies),
         
-        Expanded(
-          child: ListView.builder(
-            itemCount: nowPlayingMovies.length,
-            itemBuilder: (context, index) {
-              
-              final movie = nowPlayingMovies[index];
-          
-              return ListTile(
-                onTap: () {},
-                title: Text(movie.title),
-              );
-            },
-          ),
-        ),
+        MovieHorizontalListview(movies: nowPlayingMovies, title: 'En cines', subTitle: 'Lunes 20',)
       ],
     );
   }
