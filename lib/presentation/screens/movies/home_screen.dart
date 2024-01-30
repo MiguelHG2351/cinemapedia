@@ -1,4 +1,5 @@
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:cinemapedia/presentation/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,22 +37,50 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch( nowPlayingMoviesProvider );
+    final moviesSlideshow = ref.watch( moviesSlideShowProvider );
 
     if (nowPlayingMovies.isEmpty) return const Center(child: CircularProgressIndicator());
 
-    return Column(
-      children: [
-        const CustomAppbar(),
-
-        MoviesSlideShow(movies: nowPlayingMovies),
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: EdgeInsets.symmetric(horizontal: 0),
+            title: CustomAppbar(),
+          ),
+        ),
         
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-          title: 'En cines',
-          subTitle: 'Lunes 20',
-          loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
-        )
-      ],
+        SliverList(delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return Column(
+              children: [
+                MoviesSlideShow(movies: moviesSlideshow),
+                
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'En cines',
+                  subTitle: 'Lunes 20',
+                  loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'Próximamente',
+                  subTitle: 'En este mes',
+                  loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'Mejor calificadas',
+                  subTitle: 'Desde siempre',
+                  loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                ),
+              ]
+            );
+          },
+          childCount: 1
+        ))
+        ],
     );
   }
 }
