@@ -32,12 +32,14 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
   void initState() {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
   }
   
   @override
   Widget build(BuildContext context) {
     final nowPlayingMovies = ref.watch( nowPlayingMoviesProvider );
     final moviesSlideshow = ref.watch( moviesSlideShowProvider );
+    final popularMovies = ref.watch( popularMoviesProvider );
 
     if (nowPlayingMovies.isEmpty) return const Center(child: CircularProgressIndicator());
 
@@ -56,7 +58,6 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
             return Column(
               children: [
                 MoviesSlideShow(movies: moviesSlideshow),
-                
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
                   title: 'En cines',
@@ -68,6 +69,12 @@ class _HomeViewStateState extends ConsumerState<_HomeViewState> {
                   title: 'Próximamente',
                   subTitle: 'En este mes',
                   loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListview(
+                  movies: popularMovies,
+                  title: 'Populares',
+                  // subTitle: 'Desde siempre',
+                  loadNextPage: () => ref.read(popularMoviesProvider.notifier).loadNextPage(),
                 ),
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
