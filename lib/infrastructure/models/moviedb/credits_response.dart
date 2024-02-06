@@ -42,7 +42,7 @@ class Cast {
     final double popularity;
     final String? profilePath;
     final int? castId;
-    final String character;
+    final String? character;
     final String creditId;
     final int? order;
     final String? department;
