@@ -9,10 +9,12 @@ typedef SearchMovieSCallaback = Future<List<Movie>> Function( String query );
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieSCallaback searchMovies;
-  StreamController<List<Movie>> debounceMovies = StreamController.broadcast();
+  final List<Movie> initialMovies;
+  StreamController<List <Movie>> debounceMovies = StreamController.broadcast();
   Timer? _debounceTimer;
 
   SearchMovieDelegate({
+    required this.initialMovies,
     required this.searchMovies
   });
 
@@ -24,10 +26,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     if ( _debounceTimer?.isActive ?? false ) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      if (query.isEmpty) {
-        debounceMovies.add([]);
-        return ;
-      }
+      // if (query.isEmpty) {
+      //   debounceMovies.add([]);
+      //   return ;
+      // }
 
       final movies = await searchMovies( query );
       debounceMovies.add(movies);
@@ -65,42 +67,28 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text('buildResults');
-    // return FutureBuilder<List<Movie>>(
-    //   future: movieRepository.searchMovies(query),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return Center(
-    //         child: CircularProgressIndicator(),
-    //       );
-    //     }
-
-    //     if (snapshot.hasError) {
-    //       return Center(
-    //         child: Text('Error: ${snapshot.error}'),
-    //       );
-    //     }
-
-    //     if (snapshot.hasData) {
-    //       return ListView.builder(
-    //         itemCount: snapshot.data.length,
-    //         itemBuilder: (context, index) {
-    //           final movie = snapshot.data[index];
-    //           return ListTile(
-    //             title: Text(movie.title),
-    //             onTap: () {
-    //               close(context, movie);
-    //             },
-    //           );
-    //         },
-    //       );
-    //     }
-
-    //     return Center(
-    //       child: Text('No results found'),
-    //     );
-    //   },
-    // );
+    _onQueryChanged(query);
+    return StreamBuilder(
+      stream: debounceMovies.stream,
+      initialData: initialMovies,
+      // future: searchMovies(query),
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+        
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            return _MovieItem(
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
+              movie: movies[index]
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -110,6 +98,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     
     return StreamBuilder(
       stream: debounceMovies.stream,
+      initialData: initialMovies,
       // future: searchMovies(query),
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
