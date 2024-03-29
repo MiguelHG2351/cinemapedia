@@ -14,11 +14,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Home Screen')
-      ),
-      bottomNavigationBar: CustomBottomNavigation(),
+    return Scaffold(
+      body: childView,
+      bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }
